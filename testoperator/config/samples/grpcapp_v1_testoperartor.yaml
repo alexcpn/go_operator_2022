@@ -4,3 +4,4 @@ metadata:
   name: testoperartor-sample
 spec:
   # TODO(user): Add fields here
+   podImage: alexcpn/run_server:1.2
