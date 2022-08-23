@@ -1,0 +1,6 @@
+domain: mytest.io
+layout:
+- go.kubebuilder.io/v3
+projectName: testoperator
+repo: mytest.io/testoperator
+version: "3"
