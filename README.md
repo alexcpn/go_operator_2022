@@ -56,7 +56,8 @@ testoperator_controller.go
 testoperator_types.go
 grpcapp_v1_testoperator.yaml
 ```
-
+You can see all the generated files here in the two commits in this branch
+https://github.com/alexcpn/go_operator_2022/compare/master...generated-code
 ## Step 4: Implement the logic
 
 In this simple Operator we are going to read the CRD `testoperator/config/samples/grpcapp_v1_testoperartor.yaml` and create a deployment via code.
