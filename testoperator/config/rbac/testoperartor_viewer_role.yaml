@@ -1,0 +1,20 @@
+# permissions for end users to view testoperartors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: testoperartor-viewer-role
+rules:
+- apiGroups:
+  - grpcapp.mytest.io
+  resources:
+  - testoperartors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - grpcapp.mytest.io
+  resources:
+  - testoperartors/status
+  verbs:
+  - get

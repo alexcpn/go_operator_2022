@@ -1,0 +1,24 @@
+# permissions for end users to edit testoperartors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: testoperartor-editor-role
+rules:
+- apiGroups:
+  - grpcapp.mytest.io
+  resources:
+  - testoperartors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - grpcapp.mytest.io
+  resources:
+  - testoperartors/status
+  verbs:
+  - get

@@ -1,0 +1,6 @@
+apiVersion: grpcapp.mytest.io/v1
+kind: Testoperartor
+metadata:
+  name: testoperartor-sample
+spec:
+  # TODO(user): Add fields here

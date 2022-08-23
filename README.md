@@ -39,8 +39,23 @@ The Init will create a child folder  of name `PROJECT` and fill with Bolier plat
 
 `make create_crd`
 
-This will create the CRD and Controller files
+Select `y` for both options Resources and Controller
 
+```
+cd testoperator && kubebuilder create api --group grpcapp --version v1 --kind Testoperartor && make manifests
+Create Resource [y/n]
+y
+Create Controller [y/n]
+y
+```
+
+This will create the CRD and Controller files. Out of the generated files three are impotant - The Controller, The Spec and the Yaml
+
+```
+testoperator_controller.go
+testoperator_types.go
+grpcapp_v1_testoperator.yaml
+```
 
 ## Step 4: Implement the logic
 

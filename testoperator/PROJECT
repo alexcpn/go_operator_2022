@@ -3,4 +3,14 @@ layout:
 - go.kubebuilder.io/v3
 projectName: testoperator
 repo: mytest.io/testoperator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: mytest.io
+  group: grpcapp
+  kind: Testoperartor
+  path: mytest.io/testoperator/api/v1
+  version: v1
 version: "3"
