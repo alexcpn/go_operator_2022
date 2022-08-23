@@ -30,6 +30,9 @@ type TestoperartorSpec struct {
 
 	// Foo is an example field of Testoperartor. Edit testoperartor_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
+
+	// Let's create a service with this operator
+	PodImage string `json:"podImage,omitempty"` //2 ADDED
 }
 
 // TestoperartorStatus defines the observed state of Testoperartor

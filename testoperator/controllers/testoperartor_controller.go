@@ -24,6 +24,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	appsv1 "k8s.io/api/apps/v1"                   //ADDED
+	corev1 "k8s.io/api/core/v1"                   //ADDED
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1" //ADDED
 	grpcappv1 "mytest.io/testoperator/api/v1"
 )
 
@@ -36,6 +39,12 @@ type TestoperartorReconciler struct {
 //+kubebuilder:rbac:groups=grpcapp.mytest.io,resources=testoperartors,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=grpcapp.mytest.io,resources=testoperartors/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=grpcapp.mytest.io,resources=testoperartors/finalizers,verbs=update
+
+//ADDED extra for creating deployment
+// generate rbac to get,list, and watch pods
+// +kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
+// generate rbac to get, list, watch, create, update, patch, and delete deployments
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -50,6 +59,59 @@ func (r *TestoperartorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
+	var testOperator grpcappv1.Testoperartor
+	if err := r.Get(ctx, req.NamespacedName, &testOperator); err != nil {
+		log.Log.Error(err, "unable to fetch Test Operator")
+		// we'll ignore not-found errors, since they can't be fixed by an immediate
+		// requeue (we'll need to wait for a new notification), and we can get them
+		// on deleted requests.
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+	// ADDED - Block below
+	log.Log.Info("Reconciling Test Operator", "Test Operator", testOperator)
+	log.FromContext(ctx).Info("Pod Image is ", "PodImageName", testOperator.Spec.PodImage)
+	// check if the PodImage is set
+	if testOperator.Spec.PodImage == "" {
+		log.Log.Info("Pod Image is not set")
+	} else {
+		log.Log.Info("Pod Image is set", "PodImageName", testOperator.Spec.PodImage)
+	}
+	//Lets create a deployment
+	one := int32(1)
+	deployment := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      testOperator.Name + "-deployment",
+			Namespace: testOperator.Namespace,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &one,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app": testOperator.Name,
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"app": testOperator.Name,
+					},
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  testOperator.Name,
+							Image: testOperator.Spec.PodImage,
+						},
+					},
+				},
+			},
+		},
+	}
+	if err := r.Create(ctx, deployment); err != nil {
+		log.Log.Error(err, "unable to create Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
+		return ctrl.Result{}, err
+	}
+	log.Log.Info("Created Deployment", "Deployment.Namespace", deployment.Namespace, "Deployment.Name", deployment.Name)
 
 	return ctrl.Result{}, nil
 }
