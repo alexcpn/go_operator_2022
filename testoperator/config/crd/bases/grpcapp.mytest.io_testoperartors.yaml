@@ -45,6 +45,17 @@ spec:
             type: object
           status:
             description: TestoperartorStatus defines the observed state of Testoperartor
+            properties:
+              errors:
+                items:
+                  type: string
+                type: array
+              healthy:
+                type: boolean
+              phase:
+                type: string
+            required:
+            - healthy
             type: object
         type: object
     served: true
