@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	nokiaappfw "github.com/nokia/industrial-application-framework/application-lib/pkg/types" //FOR NOKIAAPPFMW
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	addonv1alpha1 "sigs.k8s.io/kubebuilder-declarative-pattern/pkg/patterns/addon/pkg/apis/v1alpha1" //added for status
 )
@@ -40,7 +41,8 @@ type TestoperartorSpec struct {
 type TestoperartorStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	addonv1alpha1.CommonStatus `json:",inline"`
+	addonv1alpha1.CommonStatus `json:"CommonStatus,omitempty"`
+	nokiaappfw.AppStatus       `json:"AppStatus,omitempty"` //FOR NOKIAAPPFMW
 }
 
 //+kubebuilder:object:root=true
@@ -66,4 +68,12 @@ type TestoperartorList struct {
 
 func init() {
 	SchemeBuilder.Register(&Testoperartor{}, &TestoperartorList{})
+}
+
+func (in *Testoperartor) GetAppStatus() nokiaappfw.AppStatus {
+	return in.Status.AppStatus
+}
+
+func (in *Testoperartor) SetAppStatus(status nokiaappfw.AppStatus) {
+	in.Status.AppStatus = status
 }

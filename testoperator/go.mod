@@ -3,6 +3,7 @@ module mytest.io/testoperator
 go 1.18
 
 require (
+	github.com/nokia/industrial-application-framework/application-lib v0.0.0-20220728100629-8177abffb4a9 ////FOR NOKIAAPPFMW
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.18.1
 	k8s.io/api v0.24.2

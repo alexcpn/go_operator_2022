@@ -24,7 +24,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	log "sigs.k8s.io/controller-runtime/pkg/log"
 
-	appsv1 "k8s.io/api/apps/v1" //ADDED
+	nokiaappfw "github.com/nokia/industrial-application-framework/application-lib/pkg/types" //FOR NOKIAAPPFMW
+	appsv1 "k8s.io/api/apps/v1"                                                              //ADDED
 	"k8s.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1" //ADDED
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -154,12 +155,16 @@ func (r *TestoperartorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	if runningStatus == true { //update the status
 		testOperator.Status.CommonStatus.Healthy = true
-		testOperator.Status.CommonStatus.Phase = "Running"
+		testOperator.Status.CommonStatus.Phase = "Running" //TODO not setting properly
+		log.Log.Info("Test", "Going to update Test Operator Status", testOperator.Status)
+		// FOR APPFW
+		testOperator.Status.AppStatus = nokiaappfw.AppStatusRunning
+		testOperator.SetAppStatus(nokiaappfw.AppStatusRunning)
 		if err := r.Status().Update(ctx, &testOperator); err != nil {
 			log.Log.Error(err, "unable to update TestOperator status")
 			return ctrl.Result{}, err
 		} else {
-			log.Log.Info("Test", "Updated Test Operator Status", &testOperator.Status.CommonStatus)
+			log.Log.Info("Test", "Updated Test Operator Status", testOperator.Status)
 		}
 	}
 
